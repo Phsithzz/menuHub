@@ -5,6 +5,10 @@ The app focuses on menu exploration, category filtering, and food detail present
 
 ---
 
+## 📺 Demo / ผลลัพธ์
+[Watch the demo on YouTube](https://youtu.be/XYgAbggSKPA)
+
+---
 ## 📱 Features
 
 - Browse food menus by categories: **Meals, Sides, Snacks**
