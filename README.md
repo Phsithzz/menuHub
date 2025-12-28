@@ -1,4 +1,4 @@
-# 🍽️ MenuMate – Android Menu Browsing App
+# 🍽️ MenuHub – Android Menu Browsing App
 
 MenuHub is an Android application designed for browsing food menus in a clean and user-friendly interface.  
 The app focuses on menu exploration, category filtering, and food detail presentation using modern Android development practices.
