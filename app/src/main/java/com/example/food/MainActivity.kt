@@ -4,9 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.food.ui.theme.FoodTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,7 +19,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             FoodTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
-                   Navigation()
+
+                    Navigation()
                 }
             }
         }
