@@ -26,6 +26,6 @@ The app focuses on menu exploration, category filtering, and food detail present
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/your-username/MenuHub.git
+   git clone https://github.com/your-username/menuHub.git
    Open Project in Android Studio
     Run App
