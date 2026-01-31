@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,9 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -40,10 +41,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.food.viewModels.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FoodScreen(navController: NavController) {
+fun FoodScreen(navController: NavController, foodId: Int?, cartViewModel: CartViewModel) {
+    val food = remember(foodId) {
+        foods.find { it.id == foodId } ?: foods.first()
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -74,9 +79,7 @@ fun FoodScreen(navController: NavController) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            val food = remember {
-                foods.random()
-            }
+
 
             Image(
                 modifier = Modifier
@@ -122,19 +125,22 @@ fun FoodScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                items(foods){food->
-                    RecommendedFood(food = food, onTap = {food->
+                items(foods) { item ->
+                    RecommendedFood(food = item, onTap = { selectedFood ->
+
+                        navController.navigate("food/${selectedFood.id}")
                     })
+
                 }
             }
-            Spacer(modifier =  Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Divider(thickness = 2.dp)
-            Spacer(modifier =  Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Column(
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
                 Text(text = "Rating & Reviews", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier =  Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "The food was absolutely delicious! The flavors were well balanced, the ingredients tasted fresh, and the portion size was perfect. I would definitely order this again.",
                     fontSize = 14.sp,
@@ -143,7 +149,20 @@ fun FoodScreen(navController: NavController) {
                 )
 
             }
-            Spacer(modifier =  Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    cartViewModel.addToCart(food)
+                    navController.navigate("cart")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text("Add to Cart  $${food.price}")
+            }
 
 
         }
@@ -152,7 +171,7 @@ fun FoodScreen(navController: NavController) {
 
 
 @Composable
-fun RecommendedFood(food: Food,onTap:(Food)->Unit){
+fun RecommendedFood(food: Food, onTap: (Food) -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
@@ -162,7 +181,7 @@ fun RecommendedFood(food: Food,onTap:(Food)->Unit){
             onTap(food)
         }
     ) {
-        Column{
+        Column {
             Image(
                 modifier = Modifier.sizeIn(maxWidth = 120.dp, maxHeight = 70.dp),
                 painter = painterResource(id = food.image),
@@ -173,7 +192,7 @@ fun RecommendedFood(food: Food,onTap:(Food)->Unit){
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = food.name, color = Color(0xff313131),fontSize = 14.sp)
+                Text(text = food.name, color = Color(0xff313131), fontSize = 14.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = "${food.price}$")
                 Spacer(modifier = Modifier.height(4.dp))

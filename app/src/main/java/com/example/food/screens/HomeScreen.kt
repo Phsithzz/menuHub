@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,10 +21,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.collectAsState // สำคัญ
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.rounded.ShoppingCart
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -33,8 +35,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue // สำคัญ
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,15 +49,18 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.food.R
 import com.example.food.components.TabLayout
+import com.example.food.viewModels.CartViewModel
+import com.example.food.viewModels.HomeViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+
 data class Food(
-    val id:Int,
+    val id: Int,
     val name: String,
     @DrawableRes val image: Int,
     val type: FoodType,
     val liked: Boolean = false,
-    val price: Int = (10..100).random()
+    val price: Int
 )
 
 enum class FoodType {
@@ -63,137 +68,60 @@ enum class FoodType {
 }
 
 val foods = listOf(
-    Food(
-        1,
-        name = "Meal 1",
-        image = R.drawable.meal_1,
-        type = FoodType.Meal
-    ),
-    Food(
-        2,
-        name = "Meal 2",
-        image = R.drawable.meal_2,
-        type = FoodType.Meal
-    ),
-    Food(
-        3,
-        name = "Meal 3",
-        image = R.drawable.meal_3,
-        type = FoodType.Meal
-    ),
-    Food(
-        4,
-        name = "Meal 4",
-        image = R.drawable.meal_4,
-        type = FoodType.Meal
-    ),
-    Food(
-        5,
-        name = "Meal 5",
-        image = R.drawable.meal_5,
-        type = FoodType.Meal
-    ),
-    Food(
-        6,
-        name = "Meal 6",
-        image = R.drawable.meal_6,
-        type = FoodType.Meal
-    ),
-    Food(
-        7,
-        name = "Side 1",
-        image = R.drawable.sides_1,
-        type = FoodType.Side
-    ),
-    Food(
-        8,
-        name = "Side 2",
-        image = R.drawable.sides_2,
-        type = FoodType.Side
-    ),
-    Food(
-        9,
-        name = "Side 3",
-        image = R.drawable.sides_3,
-        type = FoodType.Side
-    ),
-    Food(
-        10,
-        name = "Side 4",
-        image = R.drawable.sides_4,
-        type = FoodType.Side
-    ),
-    Food(
-        11,
-        name = "Side 5",
-        image = R.drawable.sides_5,
-        type = FoodType.Side
-    ),
-    Food(
-        12,
-        name = "Side 6",
-        image = R.drawable.sides_6,
-        type = FoodType.Side
-    ),
-    Food(
-        13,
-        name = "Snack 1",
-        image = R.drawable.snacks_1,
-        type = FoodType.Snack
-    ),
-    Food(
-        14,
-        name = "Snack 2",
-        image = R.drawable.snacks_2,
-        type = FoodType.Snack
-    ),
-    Food(
-        15,
-        name = "Snack 3",
-        image = R.drawable.snacks_3,
-        type = FoodType.Snack
-    ),
-    Food(
-        16,
-        name = "Snack 4",
-        image = R.drawable.snacks_4,
-        type = FoodType.Snack
-    ),
-    Food(
-        17,
-        name = "Snack 5",
-        image = R.drawable.snacks_5,
-        type = FoodType.Snack
-    ),
-    Food(
-        18,
-        name = "Snack 6",
-        image = R.drawable.snacks_6,
-        type = FoodType.Snack
-    ),
-
-
-    )
+    Food(1, "Meal 1", R.drawable.meal_1, FoodType.Meal, price = 50),
+    Food(2, "Meal 2", R.drawable.meal_2, FoodType.Meal, price = 50),
+    Food(3, "Meal 3", R.drawable.meal_3, FoodType.Meal, price = 50),
+    Food(4, "Meal 4", R.drawable.meal_4, FoodType.Meal, price = 50),
+    Food(5, "Meal 5", R.drawable.meal_5, FoodType.Meal, price = 50),
+    Food(6, "Meal 6", R.drawable.meal_6, FoodType.Meal, price = 50),
+    Food(7, "Side 1", R.drawable.sides_1, FoodType.Side, price = 40),
+    Food(8, "Side 2", R.drawable.sides_2, FoodType.Side, price = 40),
+    Food(9, "Side 3", R.drawable.sides_3, FoodType.Side, price = 40),
+    Food(10, "Side 4", R.drawable.sides_4, FoodType.Side, price = 40),
+    Food(11, "Side 5", R.drawable.sides_5, FoodType.Side, price = 40),
+    Food(12, "Side 6", R.drawable.sides_6, FoodType.Side, price = 40),
+    Food(13, "Snack 1", R.drawable.snacks_1, FoodType.Snack, price = 10),
+    Food(14, "Snack 2", R.drawable.snacks_2, FoodType.Snack, price = 40),
+    Food(15, "Snack 3", R.drawable.snacks_3, FoodType.Snack, price = 10),
+    Food(16, "Snack 4", R.drawable.snacks_4, FoodType.Snack, price = 10),
+    Food(17, "Snack 5", R.drawable.snacks_5, FoodType.Snack, price = 10),
+    Food(18, "Snack 6", R.drawable.snacks_6, FoodType.Snack, price = 10),
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel,cartViewModel: CartViewModel) {
     val uiController = rememberSystemUiController()
     uiController.isStatusBarVisible = false
-
+    val foodsState by homeViewModel.foodList.collectAsState()
+    val cartItems by cartViewModel.cartItems.collectAsState()
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
-            title = {
-                Text(text = "Our Menu")
-            },
+            title = { Text(text = "Our Menu") },
             navigationIcon = {
-                Row {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    IconButton(onClick = { navController.popBackStack() }) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = "Back")
+                }
+            },
+            actions = {
+                Box(modifier = Modifier.padding(end = 16.dp)) {
+                    IconButton(onClick = { navController.navigate("cart") }) {
                         Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = "Back"
+                            imageVector = Icons.Rounded.ShoppingCart,
+                            contentDescription = "Cart",
+                            tint = Color.Black
                         )
+                    }
+                    // แสดงจุดแดงเตือนถ้ามีของในตะกร้า
+                    if (cartItems.isNotEmpty()) {
+                        Badge(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .offset(x = (-4).dp, y = 4.dp),
+                            containerColor = Color.Red
+                        ) {
+                            Text(text = cartItems.size.toString(), color = Color.White)
+                        }
                     }
                 }
             }
@@ -202,59 +130,48 @@ fun HomeScreen(navController: NavController) {
         Column(
             modifier = Modifier.padding(padding)
         ) {
-            val selectedFoodType = remember {
-                mutableIntStateOf(0)
-            }
-            val foodsState = remember {
-                mutableStateListOf(*foods.toTypedArray())
-            }
-
-            val onLikeChange: (Food) -> Unit = { food ->
-                val index = foodsState.indexOfFirst { it.id == food.id }
-
-                if (index != -1) {
-                    foodsState[index] = foodsState[index].copy(liked = !foodsState[index].liked)
-                }
-            }
-
+            val selectedFoodType = remember { mutableIntStateOf(0) }
             Spacer(modifier = Modifier.height(16.dp))
             TabLayout(
                 items = listOf(
                     "Meals" to {
                         Foods(
                             items = foodsState.filter { it.type == FoodType.Meal },
-                            onLikeChange = onLikeChange,
-                            onTap = {
-                                navController.navigate("food")
+                            onLikeChange = { food ->
+                                homeViewModel.toggleLike(food.id) // เรียก ViewModel
+                            },
+                            onTap = { food ->
+                                navController.navigate("food/${food.id}")
                             }
                         )
                     },
                     "Sides" to {
                         Foods(
                             items = foodsState.filter { it.type == FoodType.Side },
-                            onLikeChange = onLikeChange,
-                            onTap = {
-                                navController.navigate("food")
+                            onLikeChange = { food ->
+                                homeViewModel.toggleLike(food.id)
+                            },
+                            onTap = { food ->
+                                navController.navigate("food/${food.id}")
                             }
                         )
                     },
                     "Snacks" to {
                         Foods(
                             items = foodsState.filter { it.type == FoodType.Snack },
-                            onLikeChange = onLikeChange,
-                            onTap = {
-                                navController.navigate("food")
+                            onLikeChange = { food ->
+                                homeViewModel.toggleLike(food.id)
+                            },
+                            onTap = { food ->
+                                navController.navigate("food/${food.id}")
                             }
                         )
                     },
                 ),
                 selectedIndex = selectedFoodType.intValue,
-                onTabClick = {
-                    selectedFoodType.intValue = it
-                },
+                onTabClick = { selectedFoodType.intValue = it },
                 textHeight = 30.dp,
                 indicatorPadding = PaddingValues(horizontal = 10.dp)
-
             )
         }
     }
@@ -278,15 +195,9 @@ fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit, onTap: (Food) -> Unit
         ) {
             itemsIndexed(items) { index, food ->
                 Card(
-                    onClick = {
-                        onTap(food)
-                    },
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 4.dp
-                    ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White
-                    )
+                    onClick = { onTap(food) },
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
                     Box(
                         modifier = Modifier
@@ -297,15 +208,12 @@ fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit, onTap: (Food) -> Unit
                         Image(
                             modifier = Modifier
                                 .size(25.dp)
-                                .clickable {
-                                    onLikeChange(food)
-                                },
+                                .clickable { onLikeChange(food) },
                             painter = painterResource(
                                 id = if (food.liked) R.drawable.ic_like else R.drawable.ic_unlike
                             ),
                             contentDescription = null
                         )
-
                     }
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -314,13 +222,15 @@ fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit, onTap: (Food) -> Unit
                     ) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Image(
-                            modifier = Modifier.size(100.dp).clip(CircleShape),
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape),
                             painter = painterResource(id = food.image),
-                            contentDescription  = food.name,
+                            contentDescription = food.name,
                             contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = food.name,fontSize = 15.sp,color = Color(0xff383838))
+                        Text(text = food.name, fontSize = 15.sp, color = Color(0xff383838))
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(text = "${food.price}$")
                         Spacer(modifier = Modifier.height(10.dp))
@@ -330,4 +240,3 @@ fun Foods(items: List<Food>, onLikeChange: (Food) -> Unit, onTap: (Food) -> Unit
         }
     }
 }
-

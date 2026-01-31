@@ -60,8 +60,18 @@ fun AuthScreen(navController: NavController) {
         TabLayout(
             selectedTab.intValue,
             items = listOf(
-                "Sign In" to { SignIn(navController = navController, sharedPreferences = sharedPreferences) },
-                "Sign Up" to {SignUp(navController = navController,sharedPreferences=sharedPreferences)},
+                "Sign In" to {
+                    SignIn(
+                        navController = navController,
+                        sharedPreferences = sharedPreferences
+                    )
+                },
+                "Sign Up" to {
+                    SignUp(
+                        navController = navController,
+                        sharedPreferences = sharedPreferences
+                    )
+                },
             ),
             onTabClick = {
                 selectedTab.intValue = it
@@ -148,26 +158,33 @@ fun SignIn(
                     onCheckedChange = { rememberMeChecked.value = it }
                 )
             }
-            Text(text = "Remember Me", fontSize = 14.sp,modifier=Modifier.padding(horizontal = 8.dp))
+            Text(
+                text = "Remember Me",
+                fontSize = 14.sp,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Button(modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp),
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
             onClick = {
                 sharedPreferences.edit().apply {
-                    putBoolean("loggedIn",true)
-                    putString("email",email.value)
+                    putBoolean("loggedIn", true)
+                    putString("email", email.value)
                 }
                     .apply()
-                navController.navigate("home"){
+                navController.navigate("home") {
                     popUpTo(0)
                 }
-            }, shape = RoundedCornerShape(10.dp)) { Text(text = "Login")}
+            }, shape = RoundedCornerShape(10.dp)
+        ) { Text(text = "Login") }
 
 
     }
 }
+
 @Composable
 fun SignUp(
     navController: NavController,
@@ -273,26 +290,33 @@ fun SignUp(
                     onCheckedChange = { rememberMeChecked.value = it }
                 )
             }
-            Text(text = "Remember Me", fontSize = 14.sp,modifier=Modifier.padding(horizontal = 8.dp))
+            Text(
+                text = "Remember Me",
+                fontSize = 14.sp,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Button(modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp),
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
             onClick = {
                 sharedPreferences.edit().apply {
-                    putBoolean("loggedIn",true)
-                    putString("email",email.value)
+                    putBoolean("loggedIn", true)
+                    putString("email", email.value)
                 }
                     .apply()
-                navController.navigate("home"){
+                navController.navigate("home") {
                     popUpTo(0)
                 }
-            }, shape = RoundedCornerShape(10.dp)) { Text(text = "Register")}
+            }, shape = RoundedCornerShape(10.dp)
+        ) { Text(text = "Register") }
 
 
     }
 }
+
 @Composable
 fun AppTextField(
     value: String,

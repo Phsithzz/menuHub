@@ -30,11 +30,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TabLayout(
     selectedIndex: Int = 0,
-    items: List<Pair<String, @Composable () ->Unit>>,
-    onTabClick:(Int)->Unit,
+    items: List<Pair<String, @Composable () -> Unit>>,
+    onTabClick: (Int) -> Unit,
     textHeight: Dp = 35.dp,
     indicatorPadding: PaddingValues = PaddingValues()
-){
+) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),

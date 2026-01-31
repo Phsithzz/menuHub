@@ -59,9 +59,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
 
-    val nav_version = "2.7.2"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-
+    implementation("androidx.navigation:navigation-compose:2.7.2")
+    implementation("androidx.compose.material:material-icons-extended")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
 }
