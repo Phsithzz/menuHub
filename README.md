@@ -6,7 +6,7 @@ The app focuses on menu exploration, category filtering, and food detail present
 ---
 
 ## 📺 Demo / ผลลัพธ์
-[Watch the demo on YouTube](https://youtu.be/XYgAbggSKPA)
+[Watch the demo on YouTube](https://www.youtube.com/watch?v=rKY_9VR6i9o&feature=youtu.be)
 
 ---
 ## 📱 Features
