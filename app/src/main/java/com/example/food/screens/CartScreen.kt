@@ -56,7 +56,6 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel) {
             confirmButton = {
                 Button(
                     onClick = {
-
                         showSuccessDialog = false
                         cartViewModel.clearCart()
                         navController.navigate("home") { popUpTo(0) }

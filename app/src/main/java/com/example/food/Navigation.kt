@@ -22,12 +22,10 @@ fun Navigation(modifier: Modifier) {
     val navController = rememberNavController()
     val cartViewModel: CartViewModel = viewModel()
     val homeViewModel: HomeViewModel = viewModel()
-    val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("main", Context.MODE_PRIVATE)
-    val userLoggedIn = sharedPreferences.getBoolean("loggedIn", false)
+
     NavHost(
         navController = navController,
-        startDestination = if (userLoggedIn) "home" else "auth",
+        startDestination = "auth",
         modifier = modifier
     ) {
         composable("auth") {

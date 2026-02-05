@@ -1,8 +1,6 @@
 package com.example.food.screens
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.widget.Space
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -44,8 +41,7 @@ import com.example.food.components.TabLayout
 
 @Composable
 fun AuthScreen(navController: NavController) {
-    val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("main", Context.MODE_PRIVATE)
+
 
     Column(
         modifier = Modifier
@@ -62,14 +58,14 @@ fun AuthScreen(navController: NavController) {
             items = listOf(
                 "Sign In" to {
                     SignIn(
-                        navController = navController,
-                        sharedPreferences = sharedPreferences
+                        navController = navController
+
                     )
                 },
                 "Sign Up" to {
                     SignUp(
-                        navController = navController,
-                        sharedPreferences = sharedPreferences
+                        navController = navController
+
                     )
                 },
             ),
@@ -83,8 +79,8 @@ fun AuthScreen(navController: NavController) {
 @Composable
 fun SignIn(
     navController: NavController,
-    sharedPreferences: SharedPreferences
-) {
+
+    ) {
     val rememberMeChecked = remember { mutableStateOf(false) }
     val email = remember {
         mutableStateOf("")
@@ -170,13 +166,8 @@ fun SignIn(
                 .fillMaxWidth()
                 .height(40.dp),
             onClick = {
-                sharedPreferences.edit().apply {
-                    putBoolean("loggedIn", true)
-                    putString("email", email.value)
-                }
-                    .apply()
                 navController.navigate("home") {
-                    popUpTo(0)
+                    popUpTo("auth") { inclusive = true }
                 }
             }, shape = RoundedCornerShape(10.dp)
         ) { Text(text = "Login") }
@@ -188,7 +179,6 @@ fun SignIn(
 @Composable
 fun SignUp(
     navController: NavController,
-    sharedPreferences: SharedPreferences
 ) {
     val rememberMeChecked = remember { mutableStateOf(false) }
     val email = remember {
@@ -302,13 +292,8 @@ fun SignUp(
                 .fillMaxWidth()
                 .height(40.dp),
             onClick = {
-                sharedPreferences.edit().apply {
-                    putBoolean("loggedIn", true)
-                    putString("email", email.value)
-                }
-                    .apply()
                 navController.navigate("home") {
-                    popUpTo(0)
+                    popUpTo("auth") { inclusive = true }
                 }
             }, shape = RoundedCornerShape(10.dp)
         ) { Text(text = "Register") }

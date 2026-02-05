@@ -112,7 +112,6 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel,cartVi
                             tint = Color.Black
                         )
                     }
-                    // แสดงจุดแดงเตือนถ้ามีของในตะกร้า
                     if (cartItems.isNotEmpty()) {
                         Badge(
                             modifier = Modifier
